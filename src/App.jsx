@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'  
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
-import fetchDataFromAPi from './utils/api'
+import fetchDataFromApi from './utils/api'
 import { getApiConfiguration, getGenres } from './store/homeSlice'
-
 
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
@@ -22,19 +21,24 @@ function App() {
   
   
   useEffect(() => {
-    apiTesting()
+    fetchApiConfig()
   },[])
   
-  const apiTesting = () => {
-    fetchDataFromAPi('/movie/popular').then((res) => {
+  const fetchApiConfig = () => {
+    fetchDataFromApi('/configuration').then((res) => {
+      const url = {
+        backdrop: res.images.secure_base_url + "original",
+        poster: res.images.secure_base_url + "original",
+        profile: res.images.secure_base_url + "original",
+      }
       // console.log(res)
-      dispatch(getApiConfiguration(res))
+      dispatch(getApiConfiguration(url))
     })
   }
 
   return (
     <BrowserRouter>
-    <Header/>
+    {/* <Header/> */}
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/:mediaType/:id" element={<Details />} />
@@ -42,7 +46,7 @@ function App() {
       <Route path="/explore/:mediaType" element={<Explore />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
-    <Footer/>
+    {/* <Footer/> */}
     </BrowserRouter>
   )
 }
